@@ -45,8 +45,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        Debug.Log(controller.isGroud);
-
         if (controller.isGroud == false)
         {
             horizontalMove = context.ReadValue<Vector2>().x * runSpeed * 0.8f;

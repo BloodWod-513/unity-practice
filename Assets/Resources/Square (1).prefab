@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6192265843922610800}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CheckGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 6192265844326692819}
   - component: {fileID: -259528552730038991}
   - component: {fileID: 8308656645057397360}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -351,7 +351,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6192265844960078052}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CheckCelling
   m_TagString: Untagged
   m_Icon: {fileID: 0}

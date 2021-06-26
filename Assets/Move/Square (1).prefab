@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5571556120191698908}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CheckGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 5571556120591653501}
   - component: {fileID: 5571556120591653502}
   - component: {fileID: 5571556120591653503}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -298,6 +298,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 564cb0fd51cb3544d96ad224895bfe46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layerPlayer:
+    serializedVersion: 2
+    m_Bits: 0
   controller: {fileID: 5571556120591653502}
   runSpeed: 40
   jump: 0
@@ -310,7 +313,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5571556121166316872}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CheckCelling
   m_TagString: Untagged
   m_Icon: {fileID: 0}

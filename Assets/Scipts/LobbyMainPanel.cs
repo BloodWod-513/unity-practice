@@ -100,6 +100,7 @@ public class LobbyMainPanel : MonoBehaviourPunCallbacks
 
 
         SetActivePanel(RoomPanel.name);
+        PhotonNetwork.LoadLevel("Main");
     }
     public override void OnLeftRoom()
     {

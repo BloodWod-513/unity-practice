@@ -12,10 +12,7 @@ public class PlayerMovement : MonoBehaviour
     {
         photonView = GetComponent<PhotonView>();
     }
-    private void Update()
-    {
-        if (!photonView.IsMine) return;
-    }
+
 
     public MainMoveLogic controller;
 
@@ -35,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Crouch(InputAction.CallbackContext context)
     {
+
         if (context.performed)
         {
             crouch = true;
@@ -68,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
             attack = false;
             timeLeft = 0.35f;
         }
+        if (!photonView.IsMine) return;
         controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
         jump = false;
 

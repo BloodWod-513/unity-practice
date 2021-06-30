@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 
 
-public class TakingDamdge : MonoBehaviour, IPunObservable
+public class TakingDamdge : MonoBehaviour
 {
     enum MoveState
     {
@@ -23,7 +23,6 @@ public class TakingDamdge : MonoBehaviour, IPunObservable
     public int maxHealth = 100;
     public int currentHealth;
 
-    private bool isLive = true;
     private PhotonView photonView;
     void Start()
     {
@@ -32,14 +31,13 @@ public class TakingDamdge : MonoBehaviour, IPunObservable
         photonView = GetComponent<PhotonView>();
     }
 
-
+    [PunRPC]
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
 
         if (currentHealth <= 0)
         {
-            isLive = false;
             Die();
         }
     }
@@ -47,37 +45,22 @@ public class TakingDamdge : MonoBehaviour, IPunObservable
     ////////Die//////////
     void Die()
     {
-        _moveState = MoveState.Dead;
-        rb.velocity = new Vector2(0, 0);
-        //animator.Play("Dead");
-       // Destroy(ThisPlayer, _walkTimeToDead);
-        this.enabled = false;
-        PhotonNetwork.Destroy(ThisPlayer);
-        GetComponent<Collider2D>().enabled = false;
-        GetComponent<Rigidbody2D>().gravityScale = 0f;
-
-    }
-
-    private void Update()
-    {
-        if (!isLive && !photonView.IsMine) 
+        if (GetComponent<PhotonView>().InstantiationId == 0)
         {
-            Debug.Log("Die");
-            Die();
-
-        }
-    }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(isLive);
-
+            Destroy(gameObject);
         }
         else
         {
-            isLive = (bool) stream.ReceiveNext();
-        }    
+            if (photonView.IsMine)
+            {
+                _moveState = MoveState.Dead;
+                rb.velocity = new Vector2(0, 0);
+                //animator.Play("Dead");
+                this.enabled = false;
+                PhotonNetwork.Destroy(gameObject);
+                GetComponent<Collider2D>().enabled = false;
+                GetComponent<Rigidbody2D>().gravityScale = 0f;
+            }
+        }
     }
 }

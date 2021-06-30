@@ -22,13 +22,27 @@ public class PlayerCombat : MonoBehaviour
     float nextAttackTime = 0f;
 
     public bool attack = false;
+    private PhotonView photonView;
 
-
+    private void Start()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
     public void Attack(InputAction.CallbackContext context)
     {
+        if (!photonView.IsMine) return;
+
+        if (context.performed)
+        {
+            attack = true;
+        }
+        else if (context.canceled)
+        {
+            attack = false;
+        }
+
         if (Time.time >= nextAttackTime)
         {
-            Debug.Log("ok");
             FightAttack();
         }
     }
@@ -46,23 +60,19 @@ public class PlayerCombat : MonoBehaviour
 
             foreach (Collider2D enemy in Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyPlayer))
             {
-                enemy.GetComponent<TakingDamdge>().TakeDamage(attackDamage);
-                       
+                PhotonView pv = enemy.GetComponent<PhotonView>();
+                pv.RPC("TakeDamage", RpcTarget.All, attackDamage);
+                //enemy.GetComponent<TakingDamdge>().TakeDamage(attackDamage);                   
             }
         }
     }
 
 
-        //////////OnDrawGizmosSelected///////////
-        void OnDrawGizmosSelected()
+    //////////OnDrawGizmosSelected///////////
+    void OnDrawGizmosSelected()
     {
         if (attackPoint == null) return;
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
-    }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        throw new NotImplementedException();
     }
 }
 

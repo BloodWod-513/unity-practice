@@ -1,7 +1,8 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class MainMoveLogic : MonoBehaviour
+public class MainMoveLogic : MonoBehaviour, IPunObservable
 {
 	void OnDrawGizmosSelected()
 	{
@@ -39,10 +40,16 @@ public class MainMoveLogic : MonoBehaviour
 
 	public BoolEvent OnCrouchEvent;
 	private bool onCrouching = false;
-
-
-
-	private void Awake()
+	Vector3 oldPos = Vector3.zero;
+	Vector3 newPos = Vector3.zero;
+	float offsetTime = 0f;
+	bool isSinch = false;
+	private PhotonView photonView;
+	public void Start()
+    {
+		photonView = GetComponent<PhotonView>();
+	}
+    private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 
@@ -52,12 +59,22 @@ public class MainMoveLogic : MonoBehaviour
 		if (OnCrouchEvent == null)
 			OnCrouchEvent = new BoolEvent();
 	}
-
 	private void Update()
 	{
 		bool wasGrounded = isGroud;
 		isGroud = false;
-
+		if (isSinch && !photonView.IsMine)
+		{
+			if (Vector3.Distance(oldPos, newPos) > 3f)
+			{
+				transform.position = oldPos = newPos;
+			}
+			else
+			{
+				offsetTime += Time.deltaTime * 9f;
+				transform.position = Vector3.Lerp(oldPos, newPos, offsetTime);
+			}
+		}
 		// »грок приземл€етс€, если круговой радиус в позиции проверки земли задевает что-либо, обозначенное как земл€
 		// Ёто можно сделать, использу€ слои.    
 		Collider2D[] colliders = Physics2D.OverlapCircleAll(checkGround.position, checkRadius, whatIsGround);
@@ -71,8 +88,6 @@ public class MainMoveLogic : MonoBehaviour
 			}
 		}
 	}
-
-
 	public void Move(float move, bool crouch, bool jump)
 	{
 		// ≈сли присел, проверьте, может ли персонаж встать
@@ -115,14 +130,16 @@ public class MainMoveLogic : MonoBehaviour
 					OnCrouchEvent.Invoke(false);
 				}
 			}
-			// ѕереместить персонажа, найд€ целевую скорость
-			Vector3 targetVelocity = new Vector2(move * 10f, m_Rigidbody2D.velocity.y);
-			// ј затем сгладить его и применить к персонажу
-			m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity,
-				targetVelocity, ref m_Velocity, Smoothing);
+            if (photonView.IsMine)
+            {
+                Vector3 targetVelocity = new Vector2(move * 10f, m_Rigidbody2D.velocity.y);
+                // ј затем сгладить его и применить к персонажу
+                m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity,
+                    targetVelocity, ref m_Velocity, offsetTime);
+            }          
 
-			// ≈сли input перемещает игрока вправо и игрок направлен влево... 
-			if (move > 0 && !facingRight)
+            // ≈сли input перемещает игрока вправо и игрок направлен влево... 
+            if (move > 0 && !facingRight)
 			{
 				//  ћен€ем направление.
 				Swap();
@@ -147,7 +164,19 @@ public class MainMoveLogic : MonoBehaviour
 
 		}
 	}
+	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	{
+		Vector2 pos = transform.position;
+		stream.Serialize(ref pos);;
+		if (stream.IsReading)
+		{
+			oldPos = transform.position;
+			newPos = pos;
+			offsetTime = 0;
+			isSinch = true;
 
+		}
+	}
 	//ћен€ем направление
 	private void Swap()
 	{

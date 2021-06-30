@@ -21,13 +21,15 @@ public class PlayerMovement : MonoBehaviour
     float horizontalMove = 0f;
     public bool jump = false;
     bool crouch = false;
-    private bool attack = false;
+    private bool attackFight = false;
     private float timeLeft = 0.35f;
 
 
     public void Jump(InputAction.CallbackContext context)
     {
         jump = true;
+        Debug.Log(GameManager.PlayerN.Count);
+
     }
 
     public void Crouch(InputAction.CallbackContext context)
@@ -45,7 +47,16 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (controller.isGroud == false)
+        if (attackFight == true)
+        {
+            horizontalMove = context.ReadValue<Vector2>().x * runSpeed * 0.4f;
+
+        }
+        else if (attackFight == false && controller.isGroud == true)
+        {
+            horizontalMove = context.ReadValue<Vector2>().x * runSpeed;
+        }
+        else if (controller.isGroud == false)
         {
             horizontalMove = context.ReadValue<Vector2>().x * runSpeed * 0.8f;
         }
@@ -61,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
         timeLeft -= Time.deltaTime;
         if (timeLeft < 0)
         {
-            attack = false;
+            attackFight = false;
             timeLeft = 0.35f;
         }
         if (!photonView.IsMine) return;

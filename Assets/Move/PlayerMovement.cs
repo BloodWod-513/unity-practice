@@ -6,16 +6,18 @@ using Photon.Pun;
 
 public class PlayerMovement : MonoBehaviour
 {
+    Animator animator;
+    private string currentState;
 
     private PhotonView photonView;
     private void Start()
     {
+        animator = GetComponent<Animator>();
         photonView = GetComponent<PhotonView>();
     }
 
 
     public MainMoveLogic controller;
-
     public float runSpeed = 40f;
 
     float horizontalMove = 0f;
@@ -23,6 +25,21 @@ public class PlayerMovement : MonoBehaviour
     bool crouch = false;
     private bool attackFight = false;
     private float timeLeft = 0.35f;
+
+
+    const string PlyerIdle = "Idle";
+    const string PlayerWalk = "Walk";
+    const string PlayerJump = "Jump";
+    const string PlayerPunch ="Punch";
+
+
+
+    void ChangeAnimationState(string newState)
+    {
+        if (currentState == newState) return;
+        animator.Play(newState);
+        currentState = newState;
+    }
 
 
     public void Jump(InputAction.CallbackContext context)

@@ -33,6 +33,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""439baa6f-37bb-4cb1-9129-d502989cd08e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -101,6 +109,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e45e3116-059a-4ece-9d2c-6d302347bc2c"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and mous"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -128,6 +147,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Newactionmap = asset.FindActionMap("New action map", throwIfNotFound: true);
         m_Newactionmap_Move = m_Newactionmap.FindAction("Move", throwIfNotFound: true);
         m_Newactionmap_Jump = m_Newactionmap.FindAction("Jump", throwIfNotFound: true);
+        m_Newactionmap_Attack = m_Newactionmap.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -179,12 +199,14 @@ public class @Controls : IInputActionCollection, IDisposable
     private INewactionmapActions m_NewactionmapActionsCallbackInterface;
     private readonly InputAction m_Newactionmap_Move;
     private readonly InputAction m_Newactionmap_Jump;
+    private readonly InputAction m_Newactionmap_Attack;
     public struct NewactionmapActions
     {
         private @Controls m_Wrapper;
         public NewactionmapActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Newactionmap_Move;
         public InputAction @Jump => m_Wrapper.m_Newactionmap_Jump;
+        public InputAction @Attack => m_Wrapper.m_Newactionmap_Attack;
         public InputActionMap Get() { return m_Wrapper.m_Newactionmap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -200,6 +222,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_NewactionmapActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_NewactionmapActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_NewactionmapActionsCallbackInterface.OnJump;
+                @Attack.started -= m_Wrapper.m_NewactionmapActionsCallbackInterface.OnAttack;
+                @Attack.performed -= m_Wrapper.m_NewactionmapActionsCallbackInterface.OnAttack;
+                @Attack.canceled -= m_Wrapper.m_NewactionmapActionsCallbackInterface.OnAttack;
             }
             m_Wrapper.m_NewactionmapActionsCallbackInterface = instance;
             if (instance != null)
@@ -210,6 +235,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
             }
         }
     }
@@ -227,5 +255,6 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
 }

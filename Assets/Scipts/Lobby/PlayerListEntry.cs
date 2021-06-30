@@ -32,7 +32,8 @@ public class PlayerListEntry : MonoBehaviour
         //OnPlayerNumberingChanged();
         if (PhotonNetwork.LocalPlayer.ActorNumber != clientID)
         {
-            PlayerButtonReady.gameObject.SetActive(false);
+            return;
+            //PlayerButtonReady.gameObject.SetActive(false);
         }
         else
         {
@@ -80,5 +81,6 @@ public class PlayerListEntry : MonoBehaviour
     public void SetPlayerReady(bool playerReady)
     {
         PlayerButtonReady.GetComponentInChildren<TMP_Text>().text = playerReady ? "Go!" : "Ready?";
+        PlayerButtonReady.GetComponent<Graphic>().color = playerReady ? Color.green : Color.red;
     }
 }

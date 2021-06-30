@@ -45,8 +45,6 @@ public class PlayerMovement : MonoBehaviour
     public void Jump(InputAction.CallbackContext context)
     {
         jump = true;
-        Debug.Log(GameManager.PlayerN.Count);
-
     }
 
     public void Crouch(InputAction.CallbackContext context)
